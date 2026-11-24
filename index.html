@@ -180,7 +180,7 @@ async function authenticatePlayer() {
   const { error: loginError } =
     await supabaseClient.auth.verifyOtp({
       token_hash: data.token_hash,
-      type: "email"
+      type: "magiclink"
     });
 
   if (loginError) {
