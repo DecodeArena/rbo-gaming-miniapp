@@ -144,6 +144,54 @@
     const app = document.querySelector(".app");
     const videoSlot = document.getElementById("mybid-video-slot");
     const bannerSlot = document.getElementById("mybid-banner-slot");
+    
+const SUPABASE_URL = "https://aicercmvgujjhoojcxrd.supabase.co";
+const SUPABASE_KEY = "sb_publishable_V4Tz2peDGq8RApI3AF-ZSA_LMv3m8n7";
+
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+async function authenticatePlayer() {
+  const { data: sessionData } =
+    await supabaseClient.auth.getSession();
+
+  if (sessionData.session) {
+    console.log("Player session restored");
+    return;
+  }
+
+  const tg = window.Telegram?.WebApp;
+
+  if (!tg?.initData) {
+    throw new Error("Open RBO GAMING through Telegram");
+  }
+
+  const { data, error } =
+    await supabaseClient.functions.invoke("telegram-auth", {
+      body: { initData: tg.initData }
+    });
+
+  if (error || !data?.token_hash) {
+    throw new Error("Telegram authentication failed");
+  }
+
+  const { error: loginError } =
+    await supabaseClient.auth.verifyOtp({
+      token_hash: data.token_hash,
+      type: "email"
+    });
+
+  if (loginError) {
+    throw new Error("Could not establish player session");
+  }
+
+  console.log("Player authenticated successfully");
+}
+
+authenticatePlayer().catch(console.error);
+    
 
     // Give the video placement one 30-second turn, then show the banner.
     function showBanner() {
