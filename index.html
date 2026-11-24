@@ -190,8 +190,10 @@ async function authenticatePlayer() {
   console.log("Player authenticated successfully");
 }
 
-authenticatePlayer().catch(console.error);
-    
+authenticatePlayer().catch((error) => {
+  console.error("RBO AUTH:", error);
+  alert("Authentication error: " + error.message);
+});
 
     // Give the video placement one 30-second turn, then show the banner.
     function showBanner() {
