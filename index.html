@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,11 +7,11 @@
   <meta name="theme-color" content="#090910">
   <title>RBO GAMING</title>
 
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-<style>
-  * {
-    margin: 0;
+  <style>
+    * {
+      margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
@@ -32,46 +33,166 @@
       flex-direction: column;
     }
 
-    /* GAME AREA: TOP 90% */
+    /* GAME AREA */
     .game-screen {
       flex: 9;
       min-height: 0;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      background:
-        radial-gradient(ellipse at center, #302044 0%, #171321 45%, #090910 100%);
-      border-bottom: 2px solid #c9a34e;
+      overflow: auto;
+      background: #090910;
+      position: relative;
+    }
+
+    /* ORIGINAL LOBBY GRAPHIC */
+    .lobby-art {
+      width: min(100%, 60dvh);
+      aspect-ratio: 2 / 3;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .lobby-art img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* INVISIBLE INTERACTIVE BUTTONS */
+    .hotspot {
+      position: absolute;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    .hotspot:focus-visible {
+      outline: 2px solid white;
+      border-radius: 12px;
+    }
+
+    /* GAME PLAY BUTTONS */
+    .play-maze {
+      left: 28.8%;
+      top: 36.3%;
+      width: 18.6%;
+      height: 4.5%;
+    }
+
+    .play-rps {
+      left: 76.8%;
+      top: 36.3%;
+      width: 18.6%;
+      height: 4.5%;
+    }
+
+    .play-tictactoe {
+      left: 28.8%;
+      top: 52.5%;
+      width: 18.6%;
+      height: 4.5%;
+    }
+
+    .play-reaction {
+      left: 76.8%;
+      top: 52.5%;
+      width: 18.6%;
+      height: 4.5%;
+    }
+
+    .play-memory {
+      left: 28.8%;
+      top: 68.8%;
+      width: 18.6%;
+      height: 4.5%;
+    }
+
+    .play-connect {
+      left: 76.8%;
+      top: 68.8%;
+      width: 18.6%;
+      height: 4.5%;
+    }
+
+    .play-number {
+      left: 28.8%;
+      top: 85.1%;
+      width: 18.6%;
+      height: 4.5%;
+    }
+
+    .play-word {
+      left: 76.8%;
+      top: 85.1%;
+      width: 18.6%;
+      height: 4.5%;
+    }
+
+    /* BOTTOM NAVIGATION */
+    .nav-lobby {
+      left: 0;
+      top: 90.3%;
+      width: 20%;
+      height: 9.7%;
+    }
+
+    .nav-games {
+      left: 20%;
+      top: 90.3%;
+      width: 20%;
+      height: 9.7%;
+    }
+
+    .nav-stats {
+      left: 40%;
+      top: 90.3%;
+      width: 20%;
+      height: 9.7%;
+    }
+
+    .nav-rewards {
+      left: 60%;
+      top: 90.3%;
+      width: 20%;
+      height: 9.7%;
+    }
+
+    .nav-leaderboard {
+      left: 80%;
+      top: 90.3%;
+      width: 20%;
+      height: 9.7%;
+    }
+
+    /* NOTIFICATION */
+    .toast {
+      position: fixed;
+      z-index: 20;
+      left: 50%;
+      bottom: 13%;
+      transform: translateX(-50%);
+      width: max-content;
+      max-width: 90%;
+      padding: 12px 18px;
+      border: 1px solid #d8aaff;
+      border-radius: 12px;
+      background: #21103b;
+      color: white;
+      font-size: 13px;
       text-align: center;
+      box-shadow: 0 0 18px #8d32ff;
+      display: none;
     }
 
-    .logo {
-      color: #e7c46e;
-      font-size: clamp(28px, 8vw, 44px);
-      font-weight: 900;
-      letter-spacing: 3px;
-      text-shadow: 0 0 20px #b58b39;
+    .toast.show {
+      display: block;
     }
 
-    .tagline {
-      margin-top: 12px;
-      font-size: 11px;
-      letter-spacing: 5px;
-      color: #ded5eb;
-    }
-
-    .game-placeholder {
-      margin-top: 45px;
-      padding: 12px 25px;
-      border: 1px solid #b99550;
-      border-radius: 6px;
-      color: #e7c46e;
-      font-size: 12px;
-      letter-spacing: 2px;
-    }
-
-    /* AD AREA: BOTTOM 10% */
+    /* AD AREA */
     .ad-screen {
       flex: 1;
       min-height: 0;
@@ -110,11 +231,16 @@
 
     .app.game-only .game-screen {
       flex: 1;
-      border-bottom: 0;
     }
 
     .app.game-only .ad-screen {
       display: none;
+    }
+
+    @media (max-height: 650px) {
+      .game-screen {
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
@@ -123,18 +249,82 @@
   <main class="app">
 
     <section class="game-screen">
-      <div class="logo">RBO GAMING</div>
-      <div class="tagline">PLAY. COMPETE. WIN.</div>
-      <div class="game-placeholder">GAME DISPLAY</div>
+
+      <div class="lobby-art">
+
+        <img src="rbo-lobby.png" alt="RBO Gaming 1v1 Game Lobby">
+
+        <!-- GAME BUTTONS -->
+        <button class="hotspot play-maze"
+          aria-label="Play Maze Race"
+          onclick="playGame('Maze Race')"></button>
+
+        <button class="hotspot play-rps"
+          aria-label="Play Rock Paper Scissors"
+          onclick="playGame('Rock Paper Scissors')"></button>
+
+        <button class="hotspot play-tictactoe"
+          aria-label="Play Tic-Tac-Toe"
+          onclick="playGame('Tic-Tac-Toe')"></button>
+
+        <button class="hotspot play-reaction"
+          aria-label="Play Reaction Duel"
+          onclick="playGame('Reaction Duel')"></button>
+
+        <button class="hotspot play-memory"
+          aria-label="Play Memory Match"
+          onclick="playGame('Memory Match')"></button>
+
+        <button class="hotspot play-connect"
+          aria-label="Play Connect Four"
+          onclick="playGame('Connect Four')"></button>
+
+        <button class="hotspot play-number"
+          aria-label="Play Number Guess"
+          onclick="playGame('Number Guess')"></button>
+
+        <button class="hotspot play-word"
+          aria-label="Play Word Scramble"
+          onclick="playGame('Word Scramble')"></button>
+
+        <!-- BOTTOM NAVIGATION -->
+        <button class="hotspot nav-lobby"
+          aria-label="Lobby"
+          onclick="showSection('Lobby')"></button>
+
+        <button class="hotspot nav-games"
+          aria-label="My Games"
+          onclick="showSection('My Games')"></button>
+
+        <button class="hotspot nav-stats"
+          aria-label="Stats"
+          onclick="showSection('Stats')"></button>
+
+        <button class="hotspot nav-rewards"
+          aria-label="Rewards"
+          onclick="showSection('Rewards')"></button>
+
+        <button class="hotspot nav-leaderboard"
+          aria-label="Leaderboard"
+          onclick="showSection('Leaderboard')"></button>
+
+      </div>
+
     </section>
 
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <!-- AD AREA -->
     <section class="ad-screen" aria-label="Advertisement">
+
       <div id="mybid-banner-slot" class="ad-slot">
         <div data-banner-id="2032190"></div>
       </div>
+
       <div id="mybid-video-slot" class="ad-slot">
         <script async src="https://js.mbidadm.com/static/scripts.js" data-admpid="473304"></script>
       </div>
+
     </section>
 
   </main>
@@ -143,16 +333,42 @@
     const app = document.querySelector(".app");
     const videoSlot = document.getElementById("mybid-video-slot");
     const bannerSlot = document.getElementById("mybid-banner-slot");
-    
+    const toast = document.getElementById("toast");
 
-    // Give the video placement one 30-second turn, then show the banner.
+    let toastTimer;
+
+    function showMessage(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+
+      clearTimeout(toastTimer);
+
+      toastTimer = window.setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2500);
+    }
+
+    function playGame(gameName) {
+      showMessage(gameName + " matchmaking will be connected later.");
+    }
+
+    function showSection(sectionName) {
+      if (sectionName === "Lobby") {
+        showMessage("You are in the Game Lobby.");
+        return;
+      }
+
+      showMessage(sectionName + " will be available soon.");
+    }
+
+    // Show banner after the video advertisement turn.
     function showBanner() {
       videoSlot.replaceChildren();
       videoSlot.style.display = "none";
       bannerSlot.style.display = "block";
     }
 
-    // End the banner turn after 30 seconds and expand the game area.
+    // End the advertisement round after 60 seconds.
     function finishAdRound() {
       bannerSlot.replaceChildren();
       app.classList.add("game-only");
@@ -161,8 +377,10 @@
     window.setTimeout(showBanner, 30000);
     window.setTimeout(finishAdRound, 60000);
 
+    // Telegram Mini App setup.
     if (window.Telegram && window.Telegram.WebApp) {
       const tg = window.Telegram.WebApp;
+
       tg.ready();
       tg.expand();
       tg.setHeaderColor("#090910");
