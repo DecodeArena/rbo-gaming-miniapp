@@ -1,184 +1,379 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#111820">
-  <title>RBO GAMING</title>
-  <style>
-    :root {
-      color-scheme: dark;
-      --bg: #111820;
-      --panel: #1a2530;
-      --panel-soft: #202d39;
-      --line: #30404d;
-      --text: #edf1f4;
-      --muted: #a4b0ba;
-      --blue: #426b91;
-      --blue-hover: #527da4;
-      --blue-soft: #263e54;
-    }
-    * { box-sizing: border-box; }
-    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-    body { min-height: 100vh; }
-    button { font: inherit; }
-    .screen { min-height: 100vh; min-height: 100dvh; }
-    .boot {
-      display: grid; place-items: center; padding: 28px;
-      background: radial-gradient(ellipse at 50% 38%, #263544 0%, #17222c 42%, #111820 78%);
-      text-align: center;
-    }
-    .boot-inner { width: min(100%, 360px); }
-    .mark {
-      width: 76px; height: 76px; margin: 0 auto 22px; border: 1px solid #52677a;
-      border-radius: 22px; display: grid; place-items: center; background: #1c2a36;
-      color: #dce5ec; font-size: 25px; font-weight: 800; letter-spacing: -2px;
-      box-shadow: 0 12px 34px #0005;
-    }
-    .brand { margin: 0; font-size: clamp(27px, 8vw, 36px); letter-spacing: .16em; font-weight: 750; }
-    .tagline { margin: 10px 0 30px; color: var(--muted); font-size: 14px; letter-spacing: .04em; }
-    .loader { width: 132px; height: 3px; margin: 0 auto 26px; overflow: hidden; background: #33424e; border-radius: 10px; }
-    .loader::after { content: ""; display: block; width: 38%; height: 100%; background: #829bb1; border-radius: inherit; animation: load 1.7s ease-in-out infinite; }
-    @keyframes load { from { transform: translateX(-110%); } to { transform: translateX(360%); } }
-    .enter, .play, .nav-btn {
-      border: 1px solid #58718a; background: var(--blue); color: #fff; border-radius: 10px;
-      cursor: pointer; transition: background .15s ease, transform .15s ease;
-    }
-    .enter { min-width: 150px; padding: 12px 22px; font-weight: 650; }
-    .enter:hover, .play:hover, .nav-btn:hover { background: var(--blue-hover); }
-    button:active { transform: translateY(1px); }
-    .app { display: none; min-height: 100vh; min-height: 100dvh; padding: max(22px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom)); }
-    .app.visible { display: block; }
-    .shell { width: min(100%, 760px); margin: 0 auto; }
-    header { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 8px 2px 22px; }
-    .wordmark { font-size: 19px; font-weight: 800; letter-spacing: .13em; }
-    .status { color: #aab8c3; border: 1px solid var(--line); background: #18232d; border-radius: 99px; padding: 7px 11px; font-size: 11px; letter-spacing: .05em; }
-    .welcome { margin: 8px 0 22px; }
-    .welcome h1 { margin: 0 0 7px; font-size: clamp(25px, 6vw, 32px); font-weight: 700; letter-spacing: -.035em; }
-    .welcome p { margin: 0; color: var(--muted); font-size: 14px; }
-    .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 26px 2px 13px; }
-    .section-head h2 { margin: 0; font-size: 16px; font-weight: 700; }
-    .section-head span { color: var(--muted); font-size: 12px; }
-    .games { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-    .game {
-      min-height: 126px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between;
-      border: 1px solid var(--line); border-radius: 14px; background: linear-gradient(145deg, #202d38, #19242e);
-    }
-    .game-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
-    .game-icon { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px; background: var(--blue-soft); color: #c8d8e5; font-size: 17px; }
-    .players { color: #9eabb6; font-size: 10px; white-space: nowrap; padding-top: 4px; }
-    .game h3 { margin: 12px 0 12px; font-size: 14px; font-weight: 650; }
-    .play { align-self: flex-start; padding: 8px 14px; min-width: 86px; font-size: 12px; font-weight: 650; }
-    .bottom-nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 24px; padding: 10px; border: 1px solid var(--line); border-radius: 14px; background: #18232d; }
-    .nav-btn { padding: 10px 4px; border-color: transparent; background: transparent; color: #aebbc5; font-size: 11px; }
-    .nav-btn.active { background: var(--blue-soft); color: #edf3f7; border-color: #3c566d; }
-    .notice { min-height: 20px; margin: 12px 2px 0; color: #b5c2cc; font-size: 12px; text-align: center; }
-    @media (min-width: 600px) {
-      .app { padding-left: 28px; padding-right: 28px; }
-      .games { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-      .game { min-height: 148px; }
-    }
-    @media (max-width: 360px) {
-      .games { gap: 9px; }
-      .game { padding: 12px; min-height: 122px; }
-      .game h3 { font-size: 13px; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#172536">
+<title>RBO GAMING</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<style>
+:root {
+  --bg: #172536;
+  --surface: #213448;
+  --surface2: #293e53;
+  --blue: #527fa5;
+  --blue2: #385c7b;
+  --text: #f0f3f6;
+  --muted: #aebdca;
+  --border: #3a5065;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, sans-serif;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.boot {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: radial-gradient(circle, #344e65, #172536 75%);
+}
+
+.boot h1 {
+  letter-spacing: 5px;
+  font-size: 30px;
+}
+
+.boot p {
+  color: var(--muted);
+}
+
+.boot.hidden {
+  display: none;
+}
+
+.app {
+  display: none;
+  min-height: 100vh;
+  padding-bottom: 85px;
+}
+
+.app.visible {
+  display: block;
+}
+
+.header {
+  padding: 24px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  font-weight: 800;
+  letter-spacing: 2px;
+  font-size: 19px;
+}
+
+.coins {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 9px 13px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+
+.content {
+  max-width: 850px;
+  margin: auto;
+  padding: 20px 16px;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+.welcome h2 {
+  font-size: 27px;
+  margin-bottom: 7px;
+}
+
+.welcome p {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.section-title {
+  margin: 28px 0 15px;
+  font-size: 17px;
+}
+
+.games {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.game {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  padding: 15px;
+  min-height: 125px;
+}
+
+.game-icon {
+  width: 35px;
+  height: 35px;
+  background: var(--surface2);
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  color: #d5e2ec;
+  font-size: 18px;
+}
+
+.game h3 {
+  font-size: 14px;
+  margin: 12px 0;
+}
+
+.play {
+  background: var(--blue2);
+  border: 1px solid #587995;
+  color: white;
+  padding: 8px 17px;
+  border-radius: 7px;
+  font-size: 12px;
+}
+
+.play:hover {
+  background: var(--blue);
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 18px;
+  border-radius: 13px;
+  margin-bottom: 12px;
+}
+
+.panel p {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  background: #1b2b3c;
+  border-top: 1px solid var(--border);
+  padding: 10px 4px max(10px, env(safe-area-inset-bottom));
+}
+
+.nav-button {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  padding: 9px 2px;
+  border-radius: 8px;
+}
+
+.nav-button.active {
+  background: var(--surface2);
+  color: white;
+}
+
+@media (min-width: 600px) {
+  .games {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+</style>
 </head>
+
 <body>
-  <section class="screen boot" id="boot" aria-label="RBO Gaming loading screen">
-    <div class="boot-inner">
-      <div class="mark" aria-hidden="true">RBO</div>
-      <p class="brand">RBO GAMING</p>
-      <p class="tagline">Play. Compete. Earn Coins.</p>
-      <div class="loader" aria-hidden="true"></div>
-      <button class="enter" id="enterButton" type="button">Enter lobby</button>
-    </div>
-  </section>
 
-  <main class="app" id="app">
-    <div class="shell">
-      <header>
-        <div class="wordmark">RBO GAMING</div>
-        <div class="status">1v1 GAME LOBBY</div>
-      </header>
+<!-- BOOT SCREEN -->
+<section class="boot" id="boot">
+  <div>
+    <h1>RBO GAMING</h1>
+    <p>Play. Compete. Earn Coins.</p>
+    <p>Loading your experience...</p>
+  </div>
+</section>
 
-      <section class="welcome">
-        <h1>Choose your game</h1>
-        <p>Pick a challenge and get ready to compete.</p>
-      </section>
+<!-- APPLICATION -->
+<div class="app" id="app">
 
-      <div class="section-head">
-        <h2>Available games</h2>
-        <span>8 games</span>
-      </div>
+<header class="header">
+  <div class="logo">RBO GAMING</div>
+  <div class="coins">🪙 0 Coins</div>
+</header>
 
-      <section class="games" aria-label="Eight available games">
-        <article class="game"><div class="game-top"><div class="game-icon">▦</div><span class="players">1v1</span></div><h3>Maze Race</h3><button class="play" data-game="Maze Race">Play</button></article>
-        <article class="game"><div class="game-top"><div class="game-icon">✊</div><span class="players">1v1</span></div><h3>Rock Paper Scissors</h3><button class="play" data-game="Rock Paper Scissors">Play</button></article>
-        <article class="game"><div class="game-top"><div class="game-icon">✕</div><span class="players">1v1</span></div><h3>Tic-Tac-Toe</h3><button class="play" data-game="Tic-Tac-Toe">Play</button></article>
-        <article class="game"><div class="game-top"><div class="game-icon">◷</div><span class="players">1v1</span></div><h3>Reaction Duel</h3><button class="play" data-game="Reaction Duel">Play</button></article>
-        <article class="game"><div class="game-top"><div class="game-icon">▤</div><span class="players">1v1</span></div><h3>Memory Match</h3><button class="play" data-game="Memory Match">Play</button></article>
-        <article class="game"><div class="game-top"><div class="game-icon">⊞</div><span class="players">1v1</span></div><h3>Connect Four</h3><button class="play" data-game="Connect Four">Play</button></article>
-        <article class="game"><div class="game-top"><div class="game-icon">#</div><span class="players">1v1</span></div><h3>Number Guess</h3><button class="play" data-game="Number Guess">Play</button></article>
-        <article class="game"><div class="game-top"><div class="game-icon">Aa</div><span class="players">1v1</span></div><h3>Word Scramble</h3><button class="play" data-game="Word Scramble">Play</button></article>
-      </section>
+<main class="content">
 
-      <nav class="bottom-nav" aria-label="Main navigation">
-        <button class="nav-btn active" data-nav="Lobby">Lobby</button>
-        <button class="nav-btn" data-nav="Leaderboard">Leaderboard</button>
-        <button class="nav-btn" data-nav="Referrals">Referrals</button>
-        <button class="nav-btn" data-nav="Profile">Profile</button>
-      </nav>
-      <p class="notice" id="notice" role="status" aria-live="polite"></p>
-    </div>
-  </main>
+<!-- LOBBY -->
+<section class="page active" id="lobby">
+  <div class="welcome">
+    <h2>Welcome to RBO</h2>
+    <p>Choose a game and challenge another player.</p>
+  </div>
 
-  <script>
-    const boot = document.getElementById('boot');
-    const app = document.getElementById('app');
-    const enterButton = document.getElementById('enterButton');
-    let opened = false;
+  <h3 class="section-title">1v1 Games</h3>
 
-    function openLobby() {
-      if (opened) return;
-      opened = true;
-      boot.hidden = true;
-      app.classList.add('visible');
-    }
+  <div class="games">
 
-    enterButton.addEventListener('click', openLobby);
-    // Keep the boot page visible briefly, then open the lobby automatically.
-    window.setTimeout(openLobby, 2400);
+    <article class="game">
+      <div class="game-icon">▦</div>
+      <h3>Maze Race</h3>
+      <button class="play" onclick="openGame('Maze Race')">Play</button>
+    </article>
 
-    const notice = document.getElementById('notice');
-    document.querySelectorAll('.play').forEach(button => {
-      button.addEventListener('click', () => {
-        notice.textContent = button.dataset.game + ' matchmaking will be connected later.';
-      });
-    });
-    document.querySelectorAll('.nav-btn').forEach(button => {
-      button.addEventListener('click', () => {
-        document.querySelectorAll('.nav-btn').forEach(item => item.classList.remove('active'));
-        button.classList.add('active');
-        if (button.dataset.nav !== 'Lobby') {
-          notice.textContent = button.dataset.nav + ' will be available later.';
-        } else {
-          notice.textContent = '';
-        }
-      });
-    });
+    <article class="game">
+      <div class="game-icon">✊</div>
+      <h3>Rock Paper Scissors</h3>
+      <button class="play" onclick="openGame('Rock Paper Scissors')">Play</button>
+    </article>
 
-    if (window.Telegram && window.Telegram.WebApp) {
-      const tg = window.Telegram.WebApp;
-      tg.ready();
-      tg.expand();
-      tg.setHeaderColor('#111820');
-      tg.setBackgroundColor('#111820');
-    }
-  </script>
+    <article class="game">
+      <div class="game-icon">✕</div>
+      <h3>Tic-Tac-Toe</h3>
+      <button class="play" onclick="openGame('Tic-Tac-Toe')">Play</button>
+    </article>
+
+    <article class="game">
+      <div class="game-icon">◷</div>
+      <h3>Reaction Duel</h3>
+      <button class="play" onclick="openGame('Reaction Duel')">Play</button>
+    </article>
+
+    <article class="game">
+      <div class="game-icon">▤</div>
+      <h3>Memory Match</h3>
+      <button class="play" onclick="openGame('Memory Match')">Play</button>
+    </article>
+
+    <article class="game">
+      <div class="game-icon">⊞</div>
+      <h3>Connect Four</h3>
+      <button class="play" onclick="openGame('Connect Four')">Play</button>
+    </article>
+
+    <article class="game">
+      <div class="game-icon">#</div>
+      <h3>Number Guess</h3>
+      <button class="play" onclick="openGame('Number Guess')">Play</button>
+    </article>
+
+    <article class="game">
+      <div class="game-icon">Aa</div>
+      <h3>Word Scramble</h3>
+      <button class="play" onclick="openGame('Word Scramble')">Play</button>
+    </article>
+
+  </div>
+</section>
+
+<!-- LEADERBOARD -->
+<section class="page" id="leaderboard">
+  <h2>Leaderboard</h2>
+  <div class="panel">
+    <p>Global player rankings will appear here.</p>
+  </div>
+</section>
+
+<!-- REFERRALS -->
+<section class="page" id="referrals">
+  <h2>My Referral Network</h2>
+  <div class="panel">
+    <p>Your upliners and downliners will appear here.</p>
+  </div>
+</section>
+
+<!-- WALLET -->
+<section class="page" id="wallet">
+  <h2>My Coins</h2>
+  <div class="panel">
+    <h3>0 Coins</h3>
+    <p>Your wallet balance will appear here.</p>
+  </div>
+</section>
+
+<!-- PROFILE -->
+<section class="page" id="profile">
+  <h2>My Profile</h2>
+  <div class="panel">
+    <h3>Player Account</h3>
+    <p>Your account information will appear here.</p>
+  </div>
+</section>
+
+</main>
+
+<!-- NAVIGATION -->
+<nav class="bottom-nav">
+  <button class="nav-button active" onclick="showPage('lobby',this)">Lobby</button>
+  <button class="nav-button" onclick="showPage('leaderboard',this)">Ranks</button>
+  <button class="nav-button" onclick="showPage('referrals',this)">Network</button>
+  <button class="nav-button" onclick="showPage('wallet',this)">Coins</button>
+  <button class="nav-button" onclick="showPage('profile',this)">Profile</button>
+</nav>
+
+</div>
+
+<script>
+function showPage(pageId, button) {
+  document.querySelectorAll('.page').forEach(page => {
+    page.classList.remove('active');
+  });
+
+  document.getElementById(pageId).classList.add('active');
+
+  document.querySelectorAll('.nav-button').forEach(nav => {
+    nav.classList.remove('active');
+  });
+
+  button.classList.add('active');
+}
+
+function openGame(gameName) {
+  alert(gameName + ' game interface will be added in Stage 2.');
+}
+
+function openLobby() {
+  document.getElementById('boot').classList.add('hidden');
+  document.getElementById('app').classList.add('visible');
+}
+
+window.setTimeout(openLobby, 2000);
+
+if (window.Telegram && window.Telegram.WebApp) {
+  const tg = window.Telegram.WebApp;
+  tg.ready();
+  tg.expand();
+  tg.setHeaderColor('#172536');
+  tg.setBackgroundColor('#172536');
+}
+</script>
+
 </body>
 </html>
