@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111820">
+  <title>RBO GAMING</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #111820;
+      --panel: #1a2530;
+      --panel-soft: #202d39;
+      --line: #30404d;
+      --text: #edf1f4;
+      --muted: #a4b0ba;
+      --blue: #426b91;
+      --blue-hover: #527da4;
+      --blue-soft: #263e54;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { min-height: 100vh; }
+    button { font: inherit; }
+    .screen { min-height: 100vh; min-height: 100dvh; }
+    .boot {
+      display: grid; place-items: center; padding: 28px;
+      background: radial-gradient(ellipse at 50% 38%, #263544 0%, #17222c 42%, #111820 78%);
+      text-align: center;
+    }
+    .boot-inner { width: min(100%, 360px); }
+    .mark {
+      width: 76px; height: 76px; margin: 0 auto 22px; border: 1px solid #52677a;
+      border-radius: 22px; display: grid; place-items: center; background: #1c2a36;
+      color: #dce5ec; font-size: 25px; font-weight: 800; letter-spacing: -2px;
+      box-shadow: 0 12px 34px #0005;
+    }
+    .brand { margin: 0; font-size: clamp(27px, 8vw, 36px); letter-spacing: .16em; font-weight: 750; }
+    .tagline { margin: 10px 0 30px; color: var(--muted); font-size: 14px; letter-spacing: .04em; }
+    .loader { width: 132px; height: 3px; margin: 0 auto 26px; overflow: hidden; background: #33424e; border-radius: 10px; }
+    .loader::after { content: ""; display: block; width: 38%; height: 100%; background: #829bb1; border-radius: inherit; animation: load 1.7s ease-in-out infinite; }
+    @keyframes load { from { transform: translateX(-110%); } to { transform: translateX(360%); } }
+    .enter, .play, .nav-btn {
+      border: 1px solid #58718a; background: var(--blue); color: #fff; border-radius: 10px;
+      cursor: pointer; transition: background .15s ease, transform .15s ease;
+    }
+    .enter { min-width: 150px; padding: 12px 22px; font-weight: 650; }
+    .enter:hover, .play:hover, .nav-btn:hover { background: var(--blue-hover); }
+    button:active { transform: translateY(1px); }
+    .app { display: none; min-height: 100vh; min-height: 100dvh; padding: max(22px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom)); }
+    .app.visible { display: block; }
+    .shell { width: min(100%, 760px); margin: 0 auto; }
+    header { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 8px 2px 22px; }
+    .wordmark { font-size: 19px; font-weight: 800; letter-spacing: .13em; }
+    .status { color: #aab8c3; border: 1px solid var(--line); background: #18232d; border-radius: 99px; padding: 7px 11px; font-size: 11px; letter-spacing: .05em; }
+    .welcome { margin: 8px 0 22px; }
+    .welcome h1 { margin: 0 0 7px; font-size: clamp(25px, 6vw, 32px); font-weight: 700; letter-spacing: -.035em; }
+    .welcome p { margin: 0; color: var(--muted); font-size: 14px; }
+    .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 26px 2px 13px; }
+    .section-head h2 { margin: 0; font-size: 16px; font-weight: 700; }
+    .section-head span { color: var(--muted); font-size: 12px; }
+    .games { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .game {
+      min-height: 126px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between;
+      border: 1px solid var(--line); border-radius: 14px; background: linear-gradient(145deg, #202d38, #19242e);
+    }
+    .game-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .game-icon { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px; background: var(--blue-soft); color: #c8d8e5; font-size: 17px; }
+    .players { color: #9eabb6; font-size: 10px; white-space: nowrap; padding-top: 4px; }
+    .game h3 { margin: 12px 0 12px; font-size: 14px; font-weight: 650; }
+    .play { align-self: flex-start; padding: 8px 14px; min-width: 86px; font-size: 12px; font-weight: 650; }
+    .bottom-nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 24px; padding: 10px; border: 1px solid var(--line); border-radius: 14px; background: #18232d; }
+    .nav-btn { padding: 10px 4px; border-color: transparent; background: transparent; color: #aebbc5; font-size: 11px; }
+    .nav-btn.active { background: var(--blue-soft); color: #edf3f7; border-color: #3c566d; }
+    .notice { min-height: 20px; margin: 12px 2px 0; color: #b5c2cc; font-size: 12px; text-align: center; }
+    @media (min-width: 600px) {
+      .app { padding-left: 28px; padding-right: 28px; }
+      .games { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .game { min-height: 148px; }
+    }
+    @media (max-width: 360px) {
+      .games { gap: 9px; }
+      .game { padding: 12px; min-height: 122px; }
+      .game h3 { font-size: 13px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <section class="screen boot" id="boot" aria-label="RBO Gaming loading screen">
+    <div class="boot-inner">
+      <div class="mark" aria-hidden="true">RBO</div>
+      <p class="brand">RBO GAMING</p>
+      <p class="tagline">Play. Compete. Earn Coins.</p>
+      <div class="loader" aria-hidden="true"></div>
+      <button class="enter" id="enterButton" type="button">Enter lobby</button>
+    </div>
+  </section>
+
+  <main class="app" id="app">
+    <div class="shell">
+      <header>
+        <div class="wordmark">RBO GAMING</div>
+        <div class="status">1v1 GAME LOBBY</div>
+      </header>
+
+      <section class="welcome">
+        <h1>Choose your game</h1>
+        <p>Pick a challenge and get ready to compete.</p>
+      </section>
+
+      <div class="section-head">
+        <h2>Available games</h2>
+        <span>8 games</span>
+      </div>
+
+      <section class="games" aria-label="Eight available games">
+        <article class="game"><div class="game-top"><div class="game-icon">▦</div><span class="players">1v1</span></div><h3>Maze Race</h3><button class="play" data-game="Maze Race">Play</button></article>
+        <article class="game"><div class="game-top"><div class="game-icon">✊</div><span class="players">1v1</span></div><h3>Rock Paper Scissors</h3><button class="play" data-game="Rock Paper Scissors">Play</button></article>
+        <article class="game"><div class="game-top"><div class="game-icon">✕</div><span class="players">1v1</span></div><h3>Tic-Tac-Toe</h3><button class="play" data-game="Tic-Tac-Toe">Play</button></article>
+        <article class="game"><div class="game-top"><div class="game-icon">◷</div><span class="players">1v1</span></div><h3>Reaction Duel</h3><button class="play" data-game="Reaction Duel">Play</button></article>
+        <article class="game"><div class="game-top"><div class="game-icon">▤</div><span class="players">1v1</span></div><h3>Memory Match</h3><button class="play" data-game="Memory Match">Play</button></article>
+        <article class="game"><div class="game-top"><div class="game-icon">⊞</div><span class="players">1v1</span></div><h3>Connect Four</h3><button class="play" data-game="Connect Four">Play</button></article>
+        <article class="game"><div class="game-top"><div class="game-icon">#</div><span class="players">1v1</span></div><h3>Number Guess</h3><button class="play" data-game="Number Guess">Play</button></article>
+        <article class="game"><div class="game-top"><div class="game-icon">Aa</div><span class="players">1v1</span></div><h3>Word Scramble</h3><button class="play" data-game="Word Scramble">Play</button></article>
+      </section>
+
+      <nav class="bottom-nav" aria-label="Main navigation">
+        <button class="nav-btn active" data-nav="Lobby">Lobby</button>
+        <button class="nav-btn" data-nav="Leaderboard">Leaderboard</button>
+        <button class="nav-btn" data-nav="Referrals">Referrals</button>
+        <button class="nav-btn" data-nav="Profile">Profile</button>
+      </nav>
+      <p class="notice" id="notice" role="status" aria-live="polite"></p>
+    </div>
+  </main>
+
+  <script>
+    const boot = document.getElementById('boot');
+    const app = document.getElementById('app');
+    const enterButton = document.getElementById('enterButton');
+    let opened = false;
+
+    function openLobby() {
+      if (opened) return;
+      opened = true;
+      boot.hidden = true;
+      app.classList.add('visible');
+    }
+
+    enterButton.addEventListener('click', openLobby);
+    // Keep the boot page visible briefly, then open the lobby automatically.
+    window.setTimeout(openLobby, 2400);
+
+    const notice = document.getElementById('notice');
+    document.querySelectorAll('.play').forEach(button => {
+      button.addEventListener('click', () => {
+        notice.textContent = button.dataset.game + ' matchmaking will be connected later.';
+      });
+    });
+    document.querySelectorAll('.nav-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.nav-btn').forEach(item => item.classList.remove('active'));
+        button.classList.add('active');
+        if (button.dataset.nav !== 'Lobby') {
+          notice.textContent = button.dataset.nav + ' will be available later.';
+        } else {
+          notice.textContent = '';
+        }
+      });
+    });
+
+    if (window.Telegram && window.Telegram.WebApp) {
+      const tg = window.Telegram.WebApp;
+      tg.ready();
+      tg.expand();
+      tg.setHeaderColor('#111820');
+      tg.setBackgroundColor('#111820');
+    }
+  </script>
+</body>
+</html>
